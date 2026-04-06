@@ -1,0 +1,20 @@
+{
+  "packageVersion": "1.0.0",
+  "title": "CPU Bottleneck Crusher (CBC)",
+  "description": "WASM Mod for MSFS 2024 - Optimizes CPU usage for GTX 1080 Ti + Ryzen 5 2600 setups. Features dynamic traffic scaling, smart LOD adjustments, and frame pacing stabilization.",
+  "author": "CBC Team",
+  "contact": "cbc@example.com",
+  "aircraftTitle": "",
+  "airportTitle": "",
+  "content": {
+    "type": "WASM",
+    "path": "dist/cbc-module.js"
+  },
+  "dependencies": [
+    {
+      "name": "Microsoft.FlightSimulator.SimConnect",
+      "version": "1.0.0"
+    }
+  ],
+  "tags": ["optimization", "performance", "cpu", "wasm", "gtx1080ti", "ryzen2600"]
+}
