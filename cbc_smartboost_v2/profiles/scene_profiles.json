@@ -1,0 +1,43 @@
+{
+  "AIRPORT_APPROACH": {
+    "traffic": 0.30,
+    "lod_bias": -2,
+    "shadows": 1024,
+    "terrain": 75,
+    "objects": 75,
+    "clouds": 2,
+    "textures": 2048,
+    "description": "Performance-Modus für dichte Flughäfen (EDDF, KJFK, etc.)"
+  },
+  "CRUISE": {
+    "traffic": 0.60,
+    "lod_bias": 0,
+    "shadows": 2048,
+    "terrain": 150,
+    "objects": 100,
+    "clouds": 3,
+    "textures": 4096,
+    "description": "Qualitäts-Modus für Reiseflug (GTX 1080 Ti optimiert)"
+  },
+  "MOUNTAIN": {
+    "traffic": 0.40,
+    "lod_bias": -1,
+    "shadows": 2048,
+    "terrain": 200,
+    "objects": 80,
+    "clouds": 3,
+    "textures": 4096,
+    "description": "Berg-Modus: Hohe Terrain-Details, mittlere Objekte"
+  },
+  "OCEAN": {
+    "traffic": 0.20,
+    "lod_bias": 1,
+    "shadows": 1024,
+    "terrain": 50,
+    "objects": 50,
+    "clouds": 4,
+    "textures": 4096,
+    "water_waves": 4,
+    "description": "Ozean-Modus: Maximale Wolken/Wasser, minimale Objekte"
+  }
+}
