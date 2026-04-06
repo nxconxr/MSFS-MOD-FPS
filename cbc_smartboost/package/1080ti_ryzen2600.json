@@ -1,0 +1,70 @@
+{
+  "profile_name": "GTX_1080Ti_Ryzen2600",
+  "version": "1.0.0",
+  "hardware": {
+    "gpu": "NVIDIA GeForce GTX 1080 Ti",
+    "gpu_vram_gb": 11,
+    "cpu": "AMD Ryzen 5 2600",
+    "cpu_cores": 6,
+    "cpu_threads": 12
+  },
+  "thresholds": {
+    "fps_target": 58,
+    "cpu_safe_zone": 0.82,
+    "gpu_safe_zone": 0.92,
+    "vram_warning_gb": 10.2
+  },
+  "limits": {
+    "traffic_density_max": 0.5,
+    "traffic_density_min": 0.3,
+    "lod_bias_objects_min": -0.25,
+    "lod_bias_objects_max": 0.1,
+    "lod_bias_trees_min": -0.3,
+    "lod_bias_trees_max": 0.0,
+    "lod_bias_terrain_min": -0.1,
+    "lod_bias_terrain_max": 0.15
+  },
+  "recommended_settings": {
+    "terrain_lod": 120,
+    "objects_lod": 100,
+    "trees": "MEDIUM",
+    "airport_vehicle_density": 30,
+    "road_traffic": "MEDIUM",
+    "fauna": "OFF",
+    "air_traffic": "MEDIUM",
+    "texture_resolution": "ULTRA",
+    "anisotropic_filtering": 16,
+    "shadow_maps": 2048,
+    "ambient_occlusion": "HIGH",
+    "water_waves": "HIGH",
+    "volumetric_clouds": "HIGH",
+    "ray_traced_shadows": "OFF",
+    "anti_aliasing": "TAA",
+    "render_scaling": 100,
+    "fsr3_mode": "Quality",
+    "frame_generation": "OFF"
+  },
+  "system_optimizations": {
+    "power_plan": "Höchstleistung",
+    "nvidia_power_management": "Prefer Maximum Performance",
+    "nvidia_low_latency_mode": "On",
+    "nvidia_texture_filtering": "Performance",
+    "hags_enabled": true,
+    "rolling_cache_gb": 32,
+    "rolling_cache_location": "NVMe_SSD"
+  },
+  "dynamic_adjustments": {
+    "cpu_spike_threshold": 0.90,
+    "traffic_reduction_on_spike": 0.3,
+    "lod_reduction_on_spike": -0.2,
+    "cache_cleanup_interval_sec": 1800,
+    "frametime_smoothing_window": 2
+  },
+  "expected_performance": {
+    "cruise_35k_ft": {"min": 50, "max": 60, "avg": 55},
+    "approach_dense_city": {"min": 40, "max": 50, "avg": 45},
+    "airport_eddf_lax": {"min": 35, "max": 45, "avg": 40},
+    "bad_weather_clouds": {"min": 30, "max": 40, "avg": 35},
+    "fps_1pct_low": 28
+  }
+}

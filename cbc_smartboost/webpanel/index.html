@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBC SmartBoost - WebPanel Overlay</title>
+    <style>
+        :root {
+            --bg-primary: rgba(15, 23, 42, 0.95);
+            --bg-secondary: rgba(30, 41, 59, 0.9);
+            --accent-cpu: #ef4444;
+            --accent-gpu: #3b82f6;
+            --accent-good: #22c55e;
+            --accent-warning: #f59e0b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            color: var(--text-primary);
+            overflow: hidden;
+            user-select: none;
+        }
+        .container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .version { font-size: 11px; color: var(--text-secondary); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .stat-unit { font-size: 12px; color: var(--text-secondary); margin-left: 2px; }
+        .fps-good { color: var(--accent-good); }
+        .fps-warning { color: var(--accent-warning); }
+        .fps-bad { color: var(--accent-cpu); }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        .progress-cpu { background: var(--accent-cpu); }
+        .progress-gpu { background: var(--accent-gpu); }
+        .bottleneck-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .bottleneck-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .bottleneck-cpu { background: rgba(239, 68, 68, 0.2); color: var(--accent-cpu); }
+        .bottleneck-gpu { background: rgba(59, 130, 246, 0.2); color: var(--accent-gpu); }
+        .bottleneck-none { background: rgba(34, 197, 94, 0.2); color: var(--accent-good); }
+        .profile-selector { margin-bottom: 16px; }
+        .profile-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+        .profile-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .profile-btn {
+            padding: 8px 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .profile-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .profile-btn.active {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            border-color: transparent;
+            font-weight: 600;
+        }
+        .optimize-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .optimize-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+        }
+        .optimize-btn:active { transform: translateY(0); }
+        .details-toggle {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .toggle-btn:hover { color: var(--text-primary); }
+        .details-panel { display: none; margin-top: 12px; padding-top: 12px; }
+        .details-panel.show { display: block; }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: var(--text-secondary); }
+        .detail-value { color: var(--text-primary); font-weight: 500; }
+        .container.minimized { width: auto; padding: 8px 12px; }
+        .container.minimized .stats-grid,
+        .container.minimized .profile-selector,
+        .container.minimized .optimize-btn,
+        .container.minimized .details-toggle { display: none; }
+        .container.minimized .header { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .minimized-display { display: none; font-size: 20px; font-weight: 700; }
+        .container.minimized .minimized-display { display: block; }
+        .container.minimized .full-display { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container" id="cbcContainer">
+        <div class="header">
+            <div class="full-display">
+                <h1>🚀 CBC SmartBoost</h1>
+                <span class="version">v1.0.0</span>
+            </div>
+            <div class="minimized-display" id="minFps">-- FPS</div>
+            <button class="toggle-btn" onclick="toggleMinimize()" style="width: auto;">⚡</button>
+        </div>
+        <div class="stats-grid full-display">
+            <div class="stat-card">
+                <div class="stat-label">FPS</div>
+                <div class="stat-value" id="fpsValue">--<span class="stat-unit"></span></div>
+                <div class="progress-bar"><div class="progress-fill" id="fpsBar" style="width: 0%; background: var(--accent-good);"></div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Frametime</div>
+                <div class="stat-value" id="frametimeValue">--<span class="stat-unit">ms</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">CPU</div>
+                <div class="stat-value" id="cpuValue">--<span class="stat-unit">%</span></div>
+                <div class="progress-bar"><div class="progress-fill progress-cpu" id="cpuBar" style="width: 0%;"></div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">GPU</div>
+                <div class="stat-value" id="gpuValue">--<span class="stat-unit">%</span></div>
+                <div class="progress-bar"><div class="progress-fill progress-gpu" id="gpuBar" style="width: 0%;"></div></div>
+            </div>
+        </div>
+        <div class="bottleneck-indicator full-display" id="bottleneckIndicator">
+            <div class="bottleneck-icon bottleneck-none" id="bottleneckIcon">✓</div>
+            <span id="bottleneckText">System optimal</span>
+        </div>
+        <div class="profile-selector full-display">
+            <div class="profile-label">PROFILE</div>
+            <div class="profile-buttons">
+                <button class="profile-btn active" onclick="setProfile('AUTO')" data-profile="AUTO">AUTO</button>
+                <button class="profile-btn" onclick="setProfile('PERF')" data-profile="PERF">PERF</button>
+                <button class="profile-btn" onclick="setProfile('QUAL')" data-profile="QUAL">QUAL</button>
+                <button class="profile-btn" onclick="setProfile('CUST')" data-profile="CUST">CUST</button>
+            </div>
+        </div>
+        <button class="optimize-btn full-display" onclick="optimizeNow()">🎯 Optimize for 1080 Ti</button>
+        <div class="details-toggle full-display">
+            <button class="toggle-btn" onclick="toggleDetails()"><span id="toggleArrow">▼</span> Details</button>
+        </div>
+        <div class="details-panel" id="detailsPanel">
+            <div class="detail-row"><span class="detail-label">Traffic Density</span><span class="detail-value" id="trafficValue">--</span></div>
+            <div class="detail-row"><span class="detail-label">LOD Bias Objects</span><span class="detail-value" id="lodObjectsValue">--</span></div>
+            <div class="detail-row"><span class="detail-label">LOD Bias Trees</span><span class="detail-value" id="lodTreesValue">--</span></div>
+            <div class="detail-row"><span class="detail-label">Active Profile</span><span class="detail-value" id="activeProfileValue">AUTO</span></div>
+            <div class="detail-row"><span class="detail-label">Cache Status</span><span class="detail-value" id="cacheStatusValue">OK</span></div>
+        </div>
+    </div>
+    <script>
+        let isMinimized = false, currentProfile = 'AUTO';
+        let stats = { fps: 0, frametime: 0, cpu: 0, gpu: 0, trafficDensity: 0, lodBiasObjects: 0, lodBiasTrees: 0 };
+        function toggleMinimize() {
+            isMinimized = !isMinimized;
+            document.getElementById('cbcContainer').classList.toggle('minimized', isMinimized);
+        }
+        function toggleDetails() {
+            const panel = document.getElementById('detailsPanel');
+            panel.classList.toggle('show');
+            document.getElementById('toggleArrow').textContent = panel.classList.contains('show') ? '▲' : '▼';
+        }
+        function setProfile(profile) {
+            currentProfile = profile;
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.profile === profile);
+            });
+            if (typeof Module !== 'undefined' && Module.ccall) {
+                const profileMap = { 'AUTO': 0, 'PERF': 1, 'QUAL': 2, 'CUST': 3 };
+                Module.ccall('cbc_setProfile', null, ['number'], [profileMap[profile]]);
+            }
+            document.getElementById('activeProfileValue').textContent = profile;
+        }
+        function optimizeNow() {
+            setProfile('PERF');
+            alert('🎯 Optimization applied!\n\nTraffic: 30%\nLOD Bias: -0.2\nTrees: MEDIUM');
+        }
+        function updateDisplay(newStats) {
+            stats = { ...stats, ...newStats };
+            const fpsEl = document.getElementById('fpsValue'), fpsBar = document.getElementById('fpsBar');
+            document.getElementById('minFps').textContent = `${Math.round(stats.fps)} FPS`;
+            fpsEl.textContent = Math.round(stats.fps);
+            fpsEl.className = 'stat-value ' + (stats.fps >= 55 ? 'fps-good' : stats.fps >= 40 ? 'fps-warning' : 'fps-bad');
+            fpsBar.style.width = `${Math.min(100, (stats.fps / 60) * 100)}%`;
+            fpsBar.style.background = stats.fps >= 55 ? 'var(--accent-good)' : stats.fps >= 40 ? 'var(--accent-warning)' : 'var(--accent-cpu)';
+            document.getElementById('frametimeValue').textContent = stats.frametime.toFixed(1);
+            document.getElementById('cpuValue').textContent = Math.round(stats.cpu);
+            document.getElementById('cpuBar').style.width = `${Math.min(100, stats.cpu)}%`;
+            document.getElementById('gpuValue').textContent = Math.round(stats.gpu);
+            document.getElementById('gpuBar').style.width = `${Math.min(100, stats.gpu)}%`;
+            updateBottleneck();
+            document.getElementById('trafficValue').textContent = `${Math.round(stats.trafficDensity * 100)}%`;
+            document.getElementById('lodObjectsValue').textContent = stats.lodBiasObjects.toFixed(2);
+            document.getElementById('lodTreesValue').textContent = stats.lodBiasTrees.toFixed(2);
+        }
+        function updateBottleneck() {
+            const icon = document.getElementById('bottleneckIcon'), text = document.getElementById('bottleneckText');
+            if (stats.fps >= 55) { icon.className = 'bottleneck-icon bottleneck-none'; icon.textContent = '✓'; text.textContent = 'System optimal'; }
+            else if (stats.cpu > 85 && stats.cpu > stats.gpu) { icon.className = 'bottleneck-icon bottleneck-cpu'; icon.textContent = 'CPU'; text.textContent = 'CPU Bottleneck'; }
+            else if (stats.gpu > 90 && stats.gpu > stats.cpu) { icon.className = 'bottleneck-icon bottleneck-gpu'; icon.textContent = 'GPU'; text.textContent = 'GPU Bottleneck'; }
+            else { icon.className = 'bottleneck-icon bottleneck-none'; icon.textContent = '⚠'; text.textContent = 'Mixed limitation'; }
+        }
+        function simulateData() {
+            return {
+                fps: 45 + Math.random() * 15, frametime: 16 + Math.random() * 8,
+                cpu: 70 + Math.random() * 25, gpu: 80 + Math.random() * 15,
+                trafficDensity: 0.5 + Math.random() * 0.3, lodBiasObjects: -0.1 + Math.random() * 0.2, lodBiasTrees: -0.2 + Math.random() * 0.1
+            };
+        }
+        setInterval(() => updateDisplay(simulateData()), 1000);
+        updateDisplay(simulateData());
+        console.log('[CBC WebPanel] Initialized');
+    </script>
+</body>
+</html>
