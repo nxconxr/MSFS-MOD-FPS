@@ -1,0 +1,11 @@
+{
+  "dependencies": [],
+  "content_type": "MISC",
+  "title": "CBC SmartBoost v2.0 Predictive",
+  "manufacturer": "Custom",
+  "creator": "YourName",
+  "package_version": "2.0.0",
+  "minimum_game_version": "1.0.0",
+  "sim_version": "1.0.0",
+  "description": "Intelligente Performance-Mod mit Kalman-Filter, prädiktiver Hotspot-Erkennung und adaptiven Profilen für GTX 1080 Ti + Ryzen 2600"
+}

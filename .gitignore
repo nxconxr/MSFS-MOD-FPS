@@ -1,51 +1,63 @@
 ```
 # Dependencies
-node_modules/
-
-# Build outputs
-dist/
-build/
-target/
-
-# Environment
-.env
-.env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-
-# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 venv/
-.venv/
-.venv3/
 env/
 ENV/
-
-# Logs
+.venv/
+.env
+.env.local
+.env.*
+pip-log.txt
+pipenv.lock
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
 *.log
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Compressed files
-*.zip
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.gz
-*.rar
-*.7z
+# Build artifacts
+build/
+dist/
+*.egg
+*.egg-info/
+.eggs/
+.installed.cfg
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.sublime-workspace
+*.der
+*.pem
+*.crt
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 ```

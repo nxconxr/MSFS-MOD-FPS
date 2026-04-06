@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "path": "cbc_core.wasm",
+      "size": 0,
+      "date": 1700000000
+    },
+    {
+      "path": "profiles/scene_profiles.json",
+      "size": 0,
+      "date": 1700000000
+    }
+  ]
+}
