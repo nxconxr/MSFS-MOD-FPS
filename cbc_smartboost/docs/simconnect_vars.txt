@@ -1,0 +1,121 @@
+# SimConnect Variablen-Referenz für CBC SmartBoost
+# Alle relevanten FPS/CPU/GPU/LOD-SimVars für MSFS 2024
+
+# =============================================================================
+# FRAMETIME & PERFORMANCE
+# =============================================================================
+
+# FPS-Werte
+SIMVAR_FRAME_RATE                     # Aktuelle FPS (float)
+SIMVAR_TARGET_FRAME_RATE              # Ziel-FPS (float)
+
+# Thread-spezifische Frametimes (in Millisekunden)
+SIMVAR_MAIN_THREAD_FPS                # Main Thread FPS (float)
+SIMVAR_RENDER_THREAD_FPS              # Render Thread FPS (float)
+SIMVAR_MAIN_THREAD_FRAMETIME          # Main Thread Frametime ms (float)
+SIMVAR_RENDER_THREAD_FRAMETIME        # Render Thread Frametime ms (float)
+
+# =============================================================================
+# SYSTEM AUSLASTUNG
+# =============================================================================
+
+# CPU (Prozentsatz 0.0 - 1.0)
+SIMVAR_CPU_USAGE                      # Gesamt-CPU-Auslastung (float)
+SIMVAR_CPU_USAGE_MAIN_THREAD          # Main Thread CPU (float)
+
+# GPU (Prozentsatz 0.0 - 1.0)
+SIMVAR_GPU_USAGE                      # Gesamt-GPU-Auslastung (float)
+SIMVAR_GPU_TEMPERATURE                # GPU Temperatur °C (float)
+SIMVAR_VRAM_USAGE                     # VRAM Nutzung in MB (float)
+
+# =============================================================================
+# FLUGZUSTAND (für LOD-Anpassungen)
+# =============================================================================
+
+# Position
+SIMVAR_LATITUDE                       # Breitengrad (float, degrees)
+SIMVAR_LONGITUDE                      # Längengrad (float, degrees)
+SIMVAR_ALTITUDE                       # Höhe über Meer (float, feet)
+SIMVAR_ALTITUDE_ABOVE_GROUND          # Höhe über Grund (float, feet)
+
+# Geschwindigkeit
+SIMVAR_AIRSPEED_INDICATED             # Angezeigte Geschwindigkeit (float, knots)
+SIMVAR_AIRSPEED_TRUE                  # Wahre Geschwindigkeit (float, knots)
+SIMVAR_GROUND_SPEED                   # Bodengeschwindigkeit (float, knots)
+
+# Flugzustand
+SIMVAR_IS_SLOW_SIMULATION             # Langsame Simulation erkannt (bool)
+SIMVAR_SIMULATION_RATE                # Sim-Rate Multiplikator (int)
+
+# =============================================================================
+# TRAFFIC & OBJECTS (für Dynamic Scaler)
+# =============================================================================
+
+# Traffic-Dichte (0.0 - 1.0)
+SIMVAR_AI_TRAFFIC_DENSITY             # AI-Verkehr Dichte (float)
+SIMVAR_ROAD_TRAFFIC_DENSITY           # Straßenverkehr Dichte (float)
+SIMVAR_AIRPORT_VEHICLE_DENSITY        # Airport-Fahrzeuge (float)
+
+# Objekt-Anzahl
+SIMVAR_NUM_AI_AIRCRAFT                # Anzahl AI-Flugzeuge (int)
+SIMVAR_NUM_AI_VEHICLES                # Anzahl AI-Fahrzeuge (int)
+SIMVAR_NUM_BUILDINGS                  # Sichtbare Gebäude (int)
+SIMVAR_NUM_TREES                      # Sichtbare Bäume (int)
+
+# =============================================================================
+# LOD RELEVANT (indirekte Steuerung)
+# =============================================================================
+
+# Entfernungswerte
+SIMVAR_CAMERA_AIRCRAFT_DISTANCE       # Kamera zu Flugzeug (float, meters)
+SIMVAR_NEAREST_AIRPORT_DISTANCE       # Entfernung zum nächsten Airport (float, nm)
+SIMVAR_NEAREST_CITY_DISTANCE          # Entfernung zur nächsten Stadt (float, nm)
+
+# Terrain
+SIMVAR_TERRAIN_LOD                    # Current Terrain LOD Level (int)
+SIMVAR_OBJECT_LOD                     # Current Object LOD Level (int)
+SIMVAR_TEXTURE_LOD                    # Current Texture LOD Level (int)
+
+# =============================================================================
+# UMGEBUNG (für Wetter-basierte Optimierung)
+# =============================================================================
+
+SIMVAR_WEATHER_PRECIP_STATE           # Niederschlag (int: 0=none, 1=rain, 2=snow)
+SIMVAR_CLOUD_COVERAGE                 # Wolkenbedeckung (float, 0-100%)
+SIMVAR_VISIBILITY                     # Sichtweite (float, meters)
+SIMVAR_AMBIENT_WIND_VELOCITY          # Windgeschwindigkeit (float, knots)
+
+# =============================================================================
+# WRITE-VARIABLEN (für Mod-Steuerung)
+# =============================================================================
+
+# Diese können von der Mod gesetzt werden:
+# (Hinweis: Nicht alle sind in MSFS 2024 direkt schreibbar)
+
+SET_AI_TRAFFIC_DENSITY                # Traffic-Dichte setzen (float 0-1)
+SET_ROAD_TRAFFIC_DENSITY              # Straßenverkehr setzen (float 0-1)
+SET_LOD_BIAS_OBJECTS                  # LOD-Bias für Objekte (float -1 bis +1)
+SET_LOD_BIAS_TREES                    # LOD-Bias für Bäume (float -1 bis +1)
+SET_LOD_BIAS_TERRAIN                  # LOD-Bias für Terrain (float -1 bis +1)
+SET_TARGET_FRAME_RATE                 # Ziel-FPS setzen (float)
+
+# =============================================================================
+# NUTZUNG IN CBC SMARTBOOST
+# =============================================================================
+
+# Bottleneck Detection:
+#   - SIMVAR_MAIN_THREAD_FRAMETIME > SIMVAR_RENDER_THREAD_FRAMETIME → CPU
+#   - SIMVAR_RENDER_THREAD_FRAMETIME > SIMVAR_MAIN_THREAD_FRAMETIME → GPU
+#   - SIMVAR_CPU_USAGE > 0.85 → CPU kritisch
+#   - SIMVAR_GPU_USAGE > 0.90 → GPU kritisch
+
+# Dynamic Adjustments:
+#   - SIMVAR_AIRSPEED_INDICATED > 200 → LOD reduzieren
+#   - SIMVAR_ALTITUDE > 35000 → Terrain Pre-Cache erhöhen
+#   - SIMVAR_NEAREST_AIRPORT_DISTANCE < 5 → Details erhöhen
+#   - SIMVAR_VRAM_USAGE > 10444 (10.2GB) → Cache cleanup
+
+# Profile Switching:
+#   - PERFORMANCE: SET_AI_TRAFFIC_DENSITY = 0.3
+#   - QUALITY: SET_AI_TRAFFIC_DENSITY = 0.8
+#   - AUTO: Dynamisch basierend auf oben genannten Werten

@@ -1,0 +1,17 @@
+{
+  "title": "CBC SmartBoost",
+  "name": "cbc_smartboost",
+  "creator": "CBC Team",
+  "version": "1.0.0",
+  "description": "CPU Bottleneck Crusher - Adaptive Performance Mod für MSFS 2024. Optimiert dynamisch Traffic, LODs und Cache für stabile 50-60 FPS auf GTX 1080 Ti + Ryzen 5 2600.",
+  "category": "Aircraft",
+  "content": {
+    "type": "WASM",
+    "path": "build/cbc_smartboost.wasm"
+  },
+  "dependencies": [
+    "Microsoft.FlightSimulator.SimConnect"
+  ],
+  "msfsVersion": "1.0.0",
+  "tags": ["performance", "optimization", "wasm", "simconnect"]
+}

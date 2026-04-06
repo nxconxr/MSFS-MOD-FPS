@@ -1,0 +1,15 @@
+{
+  "name": "cbc_smartboost",
+  "version": "1.0.0",
+  "description": "CPU Bottleneck Crusher - Adaptive Performance Mod for MSFS 2024",
+  "main": "build/cbc_smartboost.wasm",
+  "scripts": {
+    "build": "emcc src/main.cpp -I include -o build/cbc_smartboost.wasm -s EXPORTED_FUNCTIONS='[\"_main\",\"_update\",\"_getStats\",\"_setProfile\"]' -s EXPORTED_RUNTIME_METHODS='[\"cwrap\",\"getValue\",\"setValue\"]' -s ALLOW_MEMORY_GROWTH=1 -O3",
+    "clean": "rm -rf build/*.wasm build/*.js",
+    "test": "echo 'Build first, then test in MSFS DevMode'"
+  },
+  "keywords": ["msfs", "wasm", "performance", "simconnect"],
+  "author": "CBC Team",
+  "license": "MIT",
+  "devDependencies": {}
+}
